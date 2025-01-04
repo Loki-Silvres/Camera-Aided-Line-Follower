@@ -7,7 +7,7 @@ from pynput import keyboard
 import threading
 
 nano = serial.Serial("/dev/ttyUSB0", 2000000,timeout=0.1)
-IMG_PATH="/home/pandoPi/Pictures/"
+IMG_PATH="Photos and Videos/track_images"
 vel = 42
 Turn_Vel = 45
 turn_vel = 40
@@ -115,7 +115,7 @@ def follow_line(frame):
 def show_video():
     global vel, Kp
     itr = 0
-    with open(r"/home/pandoPi/py_codes/ost.yaml", 'r') as file:
+    with open(r"config/ost.yaml", 'r') as file:
         data = yaml.safe_load(file)
     camera_matrix = np.array(data['camera_matrix']['data']).reshape((3, 3))
     distortion_coefficients = np.array(data['distortion_coefficients']['data'])
