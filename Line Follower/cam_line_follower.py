@@ -161,7 +161,7 @@ def on_press(key):
     global flag_manual
     try:
         pressed = key.char
-        if(pressed in ['4','6','8','2']):
+        if(pressed in ['4','6','8','2','3','9']):
             sendManualCommand(pressed)
         print('alphanumeric key {0} pressed'.format(
             key.char))
