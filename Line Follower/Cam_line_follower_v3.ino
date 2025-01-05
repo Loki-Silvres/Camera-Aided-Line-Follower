@@ -1,11 +1,12 @@
+#include "Servo.h"
 
+// Motor Driver used: TA6586 
 
 class motor{
   
   String ID;
   int IN_1_PIN;
   int IN_2_PIN;
-  int PWM_PIN;
   int ENC_A_PIN;
   int ENC_B_PIN;
   int counter;
@@ -13,11 +14,13 @@ class motor{
   int counts_per_rotation;
 
   public:
-  motor(String ID, int IN_1_PIN, int IN_2_PIN, int PWM_PIN, int ENC_A_PIN, int ENC_B_PIN, int counts_per_rotation = 420){
+  motor(String ID, int IN_1_PIN, int IN_2_PIN, int ENC_A_PIN, int ENC_B_PIN, int counts_per_rotation = 420){
+    
+    // IN_1_PIN must be the PWM pin
+    
     this->ID = ID;
     this->IN_1_PIN = IN_1_PIN;
     this->IN_2_PIN = IN_2_PIN;
-    this->PWM_PIN = PWM_PIN;
     this->ENC_A_PIN = ENC_A_PIN;
     this->ENC_B_PIN = ENC_B_PIN;
     this->counter = 0;
@@ -54,13 +57,11 @@ class motor{
 
     if(PWM>0){
       digitalWrite(IN_2_PIN, 1);
-      digitalWrite(IN_1_PIN, 0);
-      analogWrite(PWM_PIN, PWM);
+      analogWrite(IN_1_PIN, 255 - PWM);
     }
     else{
-      digitalWrite(IN_1_PIN, 1);
+      analogWrite(IN_1_PIN, -PWM);
       digitalWrite(IN_2_PIN, 0);
-      analogWrite(PWM_PIN, -PWM);
     }
     
   }
@@ -102,9 +103,13 @@ class motor{
   
 };
 
-// String ID, int IN_1_PIN, int IN_2_PIN, int PWM_PIN, int ENC_A_PIN, int ENC_B_PIN
-motor left("LEFT", 6, 7, 10, 2, 4);
-motor right("RIGHT", 9, 8, 11, 3, 5);
+// String ID, int IN_1_PIN, int IN_2_PIN, int ENC_A_PIN, int ENC_B_PIN
+motor left("LEFT", 6, 7, 2, 4);
+motor right("RIGHT", 9, 8, 3, 5);
+Servo servo;
+int SERVO_PIN = 10;
+int SPRAY_DOWN_ANGLE = 90;
+int SPRAY_UP_ANGLE = 60;
 
 void read_Helper_Left(){
   left.read_Encoder();
@@ -135,12 +140,13 @@ void stop_motor(){
   right.drive(0);
 }
 
+void spray_down(){
+  servo.write(SPRAY_DOWN_ANGLE);
+}
 
-
-
-
-
-
+void spray_up(){
+  servo.write(SPRAY_UP_ANGLE);
+}
 
 void setup() {
   Serial.begin(2000000); 
@@ -152,6 +158,8 @@ void setup() {
   while(!Serial.available());
   delay(1000);
 //  right.drive(0);
+  servo.attach(SERVO_PIN);
+  
 }
 void loop() {
   while(!Serial.available());
@@ -176,6 +184,7 @@ void loop() {
   }
   else if(input.indexOf("MAN")!=-1){
     int op = input.substring(input.indexOf("MAN")+3, input.length()).toInt();
+    Serial.println(op);
     switch(op){
       case 5: {
         stop_motor();
@@ -195,6 +204,14 @@ void loop() {
       }
       case 6: {
         turn_right();
+        break;
+      }
+      case 3: {
+        spray_down();
+        break;
+      }
+      case 9: {
+        spray_up();
         break;
       }
     }

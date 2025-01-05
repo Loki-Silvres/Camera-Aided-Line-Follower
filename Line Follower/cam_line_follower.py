@@ -2,8 +2,7 @@ import cv2 as cv
 import numpy as np 
 import time
 import yaml
-import serial
-from pynput import keyboard
+cfrom pynput import keyboard
 import threading
 
 nano = serial.Serial("/dev/ttyUSB0", 2000000,timeout=0.1)
@@ -15,6 +14,7 @@ Kp = 6e-7
 interval = 2 # seconds to decide off-track
 current_time = time.time()
 prev_time = time.time()
+
 
 flag_manual = False
 
