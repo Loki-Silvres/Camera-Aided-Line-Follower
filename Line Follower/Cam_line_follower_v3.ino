@@ -57,10 +57,14 @@ class motor{
 
     if(PWM>0){
       digitalWrite(IN_2_PIN, 1);
-      analogWrite(IN_1_PIN, 255 - PWM);
+      digitalWrite(IN_1_PIN, 0);
+    }
+    else if(PWM<0){
+      digitalWrite(IN_1_PIN, 1);
+      digitalWrite(IN_2_PIN, 0);
     }
     else{
-      analogWrite(IN_1_PIN, -PWM);
+      digitalWrite(IN_1_PIN, 0);
       digitalWrite(IN_2_PIN, 0);
     }
     
@@ -108,8 +112,8 @@ motor left("LEFT", 6, 7, 2, 4);
 motor right("RIGHT", 9, 8, 3, 5);
 Servo servo;
 int SERVO_PIN = 10;
-int SPRAY_DOWN_ANGLE = 90;
-int SPRAY_UP_ANGLE = 60;
+int SPRAY_DOWN_ANGLE = 100;
+int SPRAY_UP_ANGLE = 0;
 
 void read_Helper_Left(){
   left.read_Encoder();
@@ -155,13 +159,16 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(left.get_ENC_A_PIN()), read_Helper_Left, RISING); 
   attachInterrupt(digitalPinToInterrupt(right.get_ENC_A_PIN()), read_Helper_Right, RISING); 
 //  right.drive(60);
-  while(!Serial.available());
+//  while(!Serial.available());
   delay(1000);
 //  right.drive(0);
   servo.attach(SERVO_PIN);
+  servo.write(SPRAY_UP_ANGLE);
   
 }
 void loop() {
+//  forward();
+//  return;
   while(!Serial.available());
   String input = Serial.readString();
   if(input.indexOf("VL")!=-1){

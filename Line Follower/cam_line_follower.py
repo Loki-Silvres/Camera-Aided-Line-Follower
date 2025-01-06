@@ -2,7 +2,8 @@ import cv2 as cv
 import numpy as np 
 import time
 import yaml
-cfrom pynput import keyboard
+import serial 
+from pynput import keyboard
 import threading
 
 nano = serial.Serial("/dev/ttyUSB0", 2000000,timeout=0.1)
@@ -16,7 +17,7 @@ current_time = time.time()
 prev_time = time.time()
 
 
-flag_manual = False
+flag_manual = True
 
 def sendManualCommand(command):
     global nano, flag_manual
@@ -176,6 +177,7 @@ def on_press(key):
         print('special key {0} pressed'.format(
             key))
 def on_release(key):
+    sendManualCommand('5')
     print('{0} released'.format(
         key))
     if key == keyboard.Key.esc:                                         # Press 'esc' to stop motors ans program
